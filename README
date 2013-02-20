@@ -1,0 +1,11 @@
+usage: count_changes.sh [<options>] [-- <git-log-arguments>]
+
+    -h, --help              show this message
+    -v, --verbose           print additional info
+    -s, --sort-by <field>   sort results based on a field. The valid
+                            fields are: total, inserted, deleted and author
+    --use-email             use email as part of author string
+
+example:
+
+    $ ./count_changes.sh -s inserted -- next...master
