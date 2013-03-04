@@ -12,7 +12,7 @@ usage() {
     echo -e "    -h, --help\t\t\tshow this message"
     echo -e "    -v, --verbose\t\tprint additional info"
     echo -e "    -s, --sort-by <field>\tsort results based on a field. The valid"
-    echo -e "    \t\t\t\tfields are: total, inserted, deleted and author"
+    echo -e "    \t\t\t\tfields are: total, inserted, deleted, commits and author"
     echo -e "    --use-email\t\t\tuse email as part of author string"
     echo 
 }
@@ -40,7 +40,8 @@ while [ "$#" -gt 0 ]; do
         total) SORT_FIELD=1;;
         inserted) SORT_FIELD=2;;
         deleted) SORT_FIELD=3;;
-        author) SORT_FIELD=4;;
+        commits) SORT_FIELD=4;;
+        author) SORT_FIELD=5;;
         *) fatal "invalid field: $2";;
         esac
         shift
@@ -70,6 +71,7 @@ git_stats() {
             author = substr($0, length($1) + length(FS) + 1)
             if (!email)
                 sub(/ <.*>/, "", author)
+            commits[author] += 1
         }
         /^[0-9]+[\t ]+[0-9]+/ {
             inserted[author] += $1
@@ -78,8 +80,8 @@ git_stats() {
         }
         END {
             for (author in total)
-                printf("%d\t%d\t%d\t%s\n", total[author], inserted[author],
-                        deleted[author], author)
+                printf("%d\t%d\t%d\t%d\t%s\n", total[author], inserted[author],
+                        deleted[author], commits[author], author)
         }
     '
 }
@@ -87,7 +89,7 @@ git_stats() {
 # Main
 (
     # Add header
-    echo -e "Total\tInserted\tDeleted\tAuthor"
+    echo -e "Total\tInserted\tDeleted\tCommits\tAuthor"
     # Sort stats
     git_stats $@ | sort -n -r -k "$SORT_FIELD"
 ) |
