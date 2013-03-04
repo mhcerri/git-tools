@@ -5,6 +5,13 @@ VERBOSE=0
 EMAIL=0
 SORT_FIELD=1
 
+# Sort options to each field
+SORT_OPTS[1]='-n -r'
+SORT_OPTS[2]='-n -r'
+SORT_OPTS[3]='-n -r'
+SORT_OPTS[4]='-n -r'
+SORT_OPTS[5]=''
+
 # Print usage and arguments
 usage() {
     echo "usage: $(basename $0) [<options>] [-- <git-log-arguments>]"
@@ -91,7 +98,7 @@ git_stats() {
     # Add header
     echo -e "Total\tInserted\tDeleted\tCommits\tAuthor"
     # Sort stats
-    git_stats $@ | sort -n -r -k "$SORT_FIELD"
+    git_stats $@ | sort -k "$SORT_FIELD" ${SORT_OPTS[$SORT_FIELD]}
 ) |
 # Format in a table
 column -t -s "$(echo -ne \\t)"
